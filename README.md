@@ -1,7 +1,5 @@
 # Documentación de la API Servienvios
 
-![Servienvios Logo](public/images/servienvios_logo_top.png)
-
 ## Descripción General
 
 La API Servienvios es un sistema centralizado que permite la integración de sus clientes con los servicios de la empresa. El sistema proporciona endpoints unificados para la generación de guías, cotización de envíos, seguimiento de paquetes y generación de relaciones de despachos.
