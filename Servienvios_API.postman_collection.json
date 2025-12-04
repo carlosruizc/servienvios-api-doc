@@ -1,0 +1,568 @@
+{
+    "info": {
+        "_postman_id": "servienvios-api",
+        "name": "Servienvios API",
+        "description": "Colección completa de la API Servienvios para integración: generación de guías, cotización de envíos, seguimiento de envíos y generación de relación de despachos",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "servienvios"
+    },
+    "item": [
+        {
+            "name": "1. Generación de Guías",
+            "item": [
+                {
+                    "name": "Generar Guía - Síncrono",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "{{api_key}}",
+                                "description": "API Key para autenticación"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"codigo_origen\": \"11001000\",\n  \"codigo_destino\": \"05001000\",\n  \"codigo_postal_origen\": \"110111\",\n  \"codigo_postal_destino\": \"050001\",\n  \"ciudad_origen\": \"BOGOTA\",\n  \"ciudad_destino\": \"MEDELLIN\",\n  \"nombre_remitente\": \"Empresa ABC\",\n  \"direccion_remitente\": \"Calle 123 #45-67\",\n  \"telefono_remitente\": \"3001234567\",\n  \"tipo_documento_remitente\": \"NIT\",\n  \"numero_documento_remitente\": \"900123456\",\n  \"nombre_destinatario\": \"Juan Pérez\",\n  \"direccion_destinatario\": \"Carrera 78 #90-12\",\n  \"telefono_destinatario\": \"3009876543\",\n  \"tipo_documento_destinatario\": \"CC\",\n  \"numero_documento_destinatario\": \"12345678\",\n  \"cajas\": \"2\",\n  \"kilos\": \"5.5\",\n  \"peso_volumen\": \"5.0\",\n  \"valor_declarado\": \"150000\",\n  \"observaciones\": \"Manejar con cuidado\",\n  \"referencia\": \"REF-2025-001\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{endpoint_principal}}",
+                            "host": ["{{endpoint_principal}}"]
+                        },
+                        "description": "Genera una guía de envío. El sistema selecciona automáticamente el transportista según:\n1. Override de ruta específica del cliente\n2. Condiciones comerciales del cliente\n3. Valor por defecto (Deprisa)\n\nIMPORTANTE: Todos los campos son obligatorios porque el proxy no conoce qué transportista será seleccionado hasta después de procesar la solicitud completa.\n\nRespuestas posibles:\n- 200: Guía generada exitosamente\n- 400: Datos inválidos o Client ID no encontrado\n- 401: No autorizado\n- 500: Error interno"
+                    },
+                    "response": [
+                        {
+                            "name": "Respuesta Exitosa (Síncrona)",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"codigo_origen\": \"11001000\",\n  \"codigo_destino\": \"05001000\",\n  \"codigo_postal_origen\": \"110111\",\n  \"codigo_postal_destino\": \"050001\",\n  \"ciudad_origen\": \"BOGOTA\",\n  \"ciudad_destino\": \"MEDELLIN\",\n  \"nombre_remitente\": \"Empresa ABC\",\n  \"direccion_remitente\": \"Calle 123 #45-67\",\n  \"telefono_remitente\": \"3001234567\",\n  \"tipo_documento_remitente\": \"NIT\",\n  \"numero_documento_remitente\": \"900123456\",\n  \"nombre_destinatario\": \"Juan Pérez\",\n  \"direccion_destinatario\": \"Carrera 78 #90-12\",\n  \"telefono_destinatario\": \"3009876543\",\n  \"tipo_documento_destinatario\": \"CC\",\n  \"numero_documento_destinatario\": \"12345678\",\n  \"cajas\": \"2\",\n  \"kilos\": \"5.5\",\n  \"peso_volumen\": \"5.0\",\n  \"valor_declarado\": \"150000\",\n  \"observaciones\": \"Manejar con cuidado\",\n  \"referencia\": \"REF-2025-001\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_principal}}",
+                                    "host": ["{{endpoint_principal}}"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Guía generada exitosamente con Solistica\",\n    \"remesa\": \"123456789\",\n    \"pdf\": {\n        \"success\": true,\n        \"url\": \"https://s3.amazonaws.com/etiquetas-prod/solistica/123456789.pdf?X-Amz-Algorithm=...\",\n        \"s3Key\": \"solistica/123456789.pdf\",\n        \"size\": 245760,\n        \"error\": null\n    },\n    \"sticker\": {\n        \"success\": true,\n        \"url\": \"https://s3.amazonaws.com/etiquetas-prod/solistica/stickers/123456789_sticker.pdf?X-Amz-Algorithm=...\",\n        \"s3Key\": \"solistica/stickers/123456789_sticker.pdf\",\n        \"size\": 128000,\n        \"error\": null\n    },\n    \"guia\": {\n        \"numero_guia\": \"SOL-123456789\",\n        \"estado\": \"Procesado\",\n        \"fecha_generacion\": \"2025-01-15T10:30:00.000Z\",\n        \"datos_envio\": {\n            \"codigo_origen\": \"11001000\",\n            \"codigo_destino\": \"05001000\",\n            \"nombre_remitente\": \"Empresa ABC\",\n            \"nombre_destinatario\": \"Juan Pérez\"\n        }\n    }\n}"
+                        },
+                        {
+                            "name": "Error - Datos Inválidos",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"codigo_origen\": \"11001000\",\n  \"codigo_destino\": \"05001000\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_principal}}",
+                                    "host": ["{{endpoint_principal}}"]
+                                }
+                            },
+                            "status": "Bad Request",
+                            "code": 400,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"success\": false,\n    \"error\": \"Missing required field: nombre_remitente\",\n    \"message\": \"Datos de entrada inválidos\"\n}"
+                        },
+                        {
+                            "name": "Error - No Autorizado",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "invalid_api_key"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"codigo_origen\": \"11001000\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_principal}}",
+                                    "host": ["{{endpoint_principal}}"]
+                                }
+                            },
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"error\": \"Invalid API key\"\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para la generación de guías de envio."
+        },
+        {
+            "name": "2. Cotización de Envíos",
+            "item": [
+                {
+                    "name": "Cotizar Envío - Paquetería",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "{{api_key}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"origen\": \"11001000\",\n  \"destino\": \"05001000\",\n  \"tipo_envio\": \"paqueteria\",\n  \"alto\": 30,\n  \"ancho\": 40,\n  \"largo\": 50,\n  \"peso\": 5.5,\n  \"unidades\": 2,\n  \"valor_declarado\": 150000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{endpoint_cotizacion}}",
+                            "host": ["{{endpoint_cotizacion}}"]
+                        },
+                        "description": "Obtiene una cotización estimada para un envío de paquetería."
+                    },
+                    "response": [
+                        {
+                            "name": "Cotización Exitosa",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"origen\": \"11001000\",\n  \"destino\": \"05001000\",\n  \"tipo_envio\": \"paqueteria\",\n  \"alto\": 30,\n  \"ancho\": 40,\n  \"largo\": 50,\n  \"peso\": 5.5,\n  \"unidades\": 2,\n  \"valor_declarado\": 150000\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_cotizacion}}",
+                                    "host": ["{{endpoint_cotizacion}}"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"costo_total\": 25000\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para cotización de envíos."
+        },
+        {
+            "name": "3. Seguimiento de Envíos",
+            "item": [
+                {
+                    "name": "Consultar Estado de Envío",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "{{api_key}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"tracking_number\": \"123456789\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{endpoint_tracking}}",
+                            "host": ["{{endpoint_tracking}}"]
+                        },
+                        "description": "Consulta el estado actual de un envío utilizando el número de seguimiento."
+                    },
+                    "response": [
+                        {
+                            "name": "Estado de Envío",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"tracking_number\": \"123456789\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_tracking}}",
+                                    "host": ["{{endpoint_tracking}}"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"carrier\": \"deprisa\",\n    \"tracking\": {\n        \"numero_guia\": \"123456789\",\n        \"estado\": \"En tránsito\",\n        \"ubicacion_actual\": \"Centro de distribución Bogotá\",\n        \"fecha_ultima_actualizacion\": \"2024-01-15T14:30:00.000Z\",\n        \"historial\": [\n            {\n                \"fecha\": \"2024-01-15T10:00:00.000Z\",\n                \"estado\": \"Recibido\",\n                \"ubicacion\": \"Oficina de origen\"\n            },\n            {\n                \"fecha\": \"2024-01-15T14:30:00.000Z\",\n                \"estado\": \"En tránsito\",\n                \"ubicacion\": \"Centro de distribución Bogotá\"\n            }\n        ]\n    }\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para seguimiento de envíos."
+        },
+        {
+            "name": "4. Generación de Relación de Despachos",
+            "item": [
+                {
+                    "name": "Generar Relación de Despachos - Todos los Operadores",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "{{api_key}}",
+                                "description": "API Key o Bearer JWT token para autenticación"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"operador\": \"todos\",\n  \"fechaInicial\": \"2024-01-01\",\n  \"fechaFinal\": \"2024-01-31\",\n  \"environment\": \"development\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{endpoint_relacion_despachos}}",
+                            "host": ["{{endpoint_relacion_despachos}}"]
+                        },
+                        "description": "Genera un documento PDF con la relación de despachos (guías de envío) para un operador específico o todos los operadores, filtrado por rango de fechas.\n\nParámetros:\n- operador: Valores posibles: \"todos\", \"deprisa\", \"solistica\", \"tcc\", \"coordinadora\"\n- fechaInicial: Fecha inicial del rango (formato: YYYY-MM-DD)\n- fechaFinal: Fecha final del rango (formato: YYYY-MM-DD)\n- environment: Opcional, valores: \"development\" (por defecto) o \"production\"\n\nEl PDF se retorna codificado en Base64 en el campo 'base64' de la respuesta."
+                    },
+                    "response": [
+                        {
+                            "name": "Relación Generada Exitosamente",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"operador\": \"todos\",\n  \"fechaInicial\": \"2024-01-01\",\n  \"fechaFinal\": \"2024-01-31\",\n  \"environment\": \"development\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_relacion_despachos}}",
+                                    "host": ["{{endpoint_relacion_despachos}}"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"success\": true,\n    \"operador\": \"todos\",\n    \"tablesQueried\": [\n        \"GuiasCoordinadora\",\n        \"GuiasDeprisa\",\n        \"GuiasSolistica\",\n        \"GuiasTcc\"\n    ],\n    \"tableResults\": {\n        \"GuiasCoordinadora\": 15,\n        \"GuiasDeprisa\": 23,\n        \"GuiasSolistica\": 8,\n        \"GuiasTcc\": 12\n    },\n    \"count\": 58,\n    \"items\": [\n        {\n            \"id\": \"123456789\",\n            \"nombre_remitente\": \"Empresa ABC\",\n            \"nombre_destinatario\": \"Juan Pérez\",\n            \"direccion_destinatario\": \"Calle 123 #45-67\",\n            \"cajas\": \"2\",\n            \"kilos\": 5.5,\n            \"referencia\": \"REF-2024-001\",\n            \"observaciones\": \"Manejar con cuidado\",\n            \"valor_declarado\": 150000,\n            \"fecha_creacion\": \"2024-01-15T10:30:00.000Z\"\n        }\n    ],\n    \"base64\": \"JVBERi0xLjQKJeLjz9MKMy...\"\n}"
+                        },
+                        {
+                            "name": "Relación por Operador Específico",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"operador\": \"deprisa\",\n  \"fechaInicial\": \"2024-01-01\",\n  \"fechaFinal\": \"2024-01-31\",\n  \"environment\": \"development\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_relacion_despachos}}",
+                                    "host": ["{{endpoint_relacion_despachos}}"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"success\": true,\n    \"operador\": \"deprisa\",\n    \"tablesQueried\": [\n        \"GuiasDeprisa\"\n    ],\n    \"tableResults\": {\n        \"GuiasDeprisa\": 23\n    },\n    \"count\": 23,\n    \"items\": [\n        {\n            \"numero_envio\": \"123456789\",\n            \"nombre_remitente\": \"Empresa ABC\",\n            \"nombre_destinatario\": \"Juan Pérez\",\n            \"direccion_destinatario\": \"Calle 123 #45-67\",\n            \"cajas\": \"2\",\n            \"kilos\": 5.5,\n            \"referencia\": \"REF-2024-001\",\n            \"observaciones\": \"Manejar con cuidado\",\n            \"valor_declarado\": 150000\n        }\n    ],\n    \"base64\": \"JVBERi0xLjQKJeLjz9MKMy...\"\n}"
+                        },
+                        {
+                            "name": "Error - Parámetros Faltantes",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "{{api_key}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"operador\": \"todos\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_relacion_despachos}}",
+                                    "host": ["{{endpoint_relacion_despachos}}"]
+                                }
+                            },
+                            "status": "Bad Request",
+                            "code": 400,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"error\": \"Missing required parameters: operador, fechaInicial, fechaFinal\"\n}"
+                        },
+                        {
+                            "name": "Error - No Autorizado",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "invalid_api_key"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"operador\": \"todos\",\n  \"fechaInicial\": \"2024-01-01\",\n  \"fechaFinal\": \"2024-01-31\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{endpoint_relacion_despachos}}",
+                                    "host": ["{{endpoint_relacion_despachos}}"]
+                                }
+                            },
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"error\": \"Invalid API key\"\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para generación de relación de despachos en formato PDF."
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "api_key",
+            "value": "tu_api_key_aqui",
+            "description": "API Key para autenticación en todos los endpoints"
+        },
+        {
+            "key": "endpoint_principal",
+            "value": "https://gjxa520zff.execute-api.us-east-1.amazonaws.com/dev/proxy",
+            "description": "Endpoint principal para generación de guías. Cambiar /dev/ por /prod/ para producción."
+        },
+        {
+            "key": "endpoint_cotizacion",
+            "value": "https://cm1tv5pq4f.execute-api.us-east-1.amazonaws.com/getTarifa-dev",
+            "description": "Endpoint para cotización de envíos"
+        },
+        {
+            "key": "endpoint_tracking",
+            "value": "https://73jt637mn6.execute-api.us-east-1.amazonaws.com/tracking-guias",
+            "description": "Endpoint para seguimiento de envíos"
+        },
+        {
+            "key": "endpoint_relacion_despachos",
+            "value": "https://uvppnzex63azjb7pte6lndingq0rexbz.lambda-url.us-east-1.on.aws/",
+            "description": "Endpoint para generación de relación de despachos en formato PDF"
+        }
+    ]
+}
